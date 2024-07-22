@@ -5,4 +5,5 @@ RUN npm ci
 RUN npm rebuild
 COPY . ./
 RUN npm run build
-RUN npm run start
+EXPOSE 3000
+CMD [ "npm", "run" , "start" ]
