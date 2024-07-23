@@ -355,17 +355,20 @@ const AccountDetails = memo(({ account }: { account: AccountDetails }) => {
   // let numFollowers = formatter.format(followers_count)
 
   const [expandedFollowers, setExpandedFollowers] = useState(false)
-
+  const hasAvatar = avatarUrl && !avatarUrl.endsWith('.svg')
   return (
     <li className="px-4 py-3 pb-7 sm:px-0 sm:py-4">
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-shrink-0 m-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="w-16 h-16 sm:w-8 sm:h-8 rounded-full"
-            src={avatarUrl}
-            alt={fullname}
-          />
+          {hasAvatar ? (
+            <img
+              className="w-16 h-16 sm:w-8 sm:h-8 rounded-full"
+              src={avatarUrl}
+            />
+          ) : (
+            <div className="w-16 h-16 sm:w-8 sm:h-8" />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
