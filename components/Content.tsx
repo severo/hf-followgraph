@@ -535,7 +535,7 @@ function SearchInput({ onChange }: { onChange: (s: string) => void }) {
   return (
     <input
       type="text"
-      placeholder="Loubna"
+      placeholder="Schreiber"
       value={search}
       onChange={(e) => {
         setSearchInputValue(e.target.value)
