@@ -373,16 +373,11 @@ export function Content({}) {
 }
 
 const AccountDetails = memo(({ account }: { account: AccountDetails }) => {
-  const {
-    avatarUrl,
-    fullname,
-    user,
-    followed_by,
-  } = account;
+  const { avatarUrl, fullname, user, followed_by } = account
 
-  const [expandedFollowers, setExpandedFollowers] = useState(false);
-  const hasAvatar = avatarUrl && !avatarUrl.endsWith('.svg');
-  
+  const [expandedFollowers, setExpandedFollowers] = useState(false)
+  const hasAvatar = avatarUrl && !avatarUrl.endsWith('.svg')
+
   return (
     <li className="px-4 py-3 pb-7 sm:px-0 sm:py-4">
       <div className="flex flex-col gap-4 sm:flex-row">
@@ -446,13 +441,13 @@ const AccountDetails = memo(({ account }: { account: AccountDetails }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Follow
+            Go to profile
           </a>
         </div>
       </div>
     </li>
-  );
-});
+  )
+})
 AccountDetails.displayName = 'AccountDetails'
 
 function ErrorLog({ errors }: { errors: Array<string> }) {
