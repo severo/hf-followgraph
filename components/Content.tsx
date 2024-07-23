@@ -378,40 +378,43 @@ const AccountDetails = memo(({ account }: { account: AccountDetails }) => {
     fullname,
     user,
     followed_by,
-    // followers_count,
-    // details
-  } = account
-  // let formatter = Intl.NumberFormat('en', { notation: 'compact' })
-  // let numFollowers = formatter.format(followers_count)
+  } = account;
 
-  const [expandedFollowers, setExpandedFollowers] = useState(false)
-  const hasAvatar = avatarUrl && !avatarUrl.endsWith('.svg')
+  const [expandedFollowers, setExpandedFollowers] = useState(false);
+  const hasAvatar = avatarUrl && !avatarUrl.endsWith('.svg');
+  
   return (
     <li className="px-4 py-3 pb-7 sm:px-0 sm:py-4">
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-shrink-0 m-auto">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {hasAvatar ? (
-            <img
-              className="w-16 h-16 sm:w-8 sm:h-8 rounded-full"
-              src={avatarUrl}
-            />
-          ) : (
-            <div className="w-16 h-16 sm:w-8 sm:h-8" />
-          )}
+          <a
+            href={`https://huggingface.co/${user}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            {hasAvatar ? (
+              <img
+                className="w-16 h-16 sm:w-8 sm:h-8 rounded-full hover:opacity-80 transition-opacity"
+                src={avatarUrl}
+                alt={`${fullname}'s avatar`}
+              />
+            ) : (
+              <div className="w-16 h-16 sm:w-8 sm:h-8 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors" />
+            )}
+          </a>
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-            {fullname}
+            <a
+              href={`https://huggingface.co/${user}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              {fullname}
+            </a>
           </p>
-          {/* <div className="flex flex-col sm:flex-row text-sm text-gray-500 dark:text-gray-400">
-            <span className="truncate">{user}</span>
-            <span className="sm:inline hidden whitespace-pre"> | </span>
-            <span>{numFollowers} followers</span>
-          </div> */}
-          {/* <br />
-          <small className="text-sm dark:text-gray-200">{details}</small> */}
-          <br />
           <small className="text-xs text-gray-800 dark:text-gray-400">
             Followed by{' '}
             {followed_by.size < 9 || expandedFollowers ? (
@@ -441,15 +444,15 @@ const AccountDetails = memo(({ account }: { account: AccountDetails }) => {
             href={`https://huggingface.co/${user}`}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             Follow
           </a>
         </div>
       </div>
     </li>
-  )
-})
+  );
+});
 AccountDetails.displayName = 'AccountDetails'
 
 function ErrorLog({ errors }: { errors: Array<string> }) {
