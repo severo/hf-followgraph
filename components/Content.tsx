@@ -1,16 +1,12 @@
 import { Spinner } from './Spinner'
 import React, { useState, memo, useRef } from 'react'
 import debounce from 'debounce'
-import { cp } from 'fs'
 
-const usersCache = new Map<string, AccountDetails>()
+// const usersCache = new Map<string, AccountDetails>()
 
 type AccountDetails = {
   user: string
   fullname: string
-  // isFollowing: boolean
-  // type: "user" | "org"
-  // isPro: boolean
   avatarUrl: string
   followed_by: Set<string> // list of usernames
   followers_count: number
@@ -43,7 +39,6 @@ async function accountFollows(
     if (!page.map) {
       break
     }
-    page = page.slice(0, limit)
     // const newData = await Promise.all(
     //   page.map(async (account) => {
     //     const user = account.user
@@ -60,6 +55,37 @@ async function accountFollows(
     nextPage = getNextPage(response.headers.get('Link'))
   }
   return data
+}
+
+async function organizationMembers(
+  organization: string,
+  logError: (x: string) => void
+): Promise<Array<string>> {
+  let nextPage:
+    | string
+    | null = `https://huggingface.co/api/organizations/${organization}/members`
+  let members: Array<string> = []
+  while (nextPage) {
+    console.log(`Get page: ${nextPage}`)
+    let response
+    let page
+    try {
+      response = await fetch(nextPage)
+      if (response.status !== 200) {
+        throw new Error('HTTP request failed')
+      }
+      page = await response.json()
+    } catch (e) {
+      logError(`Error while retrieving members for ${organization}.`)
+      break
+    }
+    if (!page.map) {
+      break
+    }
+    members = [...members, ...page.map(({ user }) => user)]
+    nextPage = getNextPage(response.headers.get('Link'))
+  }
+  return members
 }
 
 // async function accountFollowersCount(
@@ -93,26 +119,26 @@ async function accountFollows(
 //   return count
 // }
 
-async function accountDetails(
-  handle: string,
-  logError: (x: string) => void
-): Promise<string> {
-  let page
-  try {
-    let response = await fetch(
-      `https://huggingface.co/api/users/${handle}/overview`
-    )
+// async function accountDetails(
+//   handle: string,
+//   logError: (x: string) => void
+// ): Promise<string> {
+//   let page
+//   try {
+//     let response = await fetch(
+//       `https://huggingface.co/api/users/${handle}/overview`
+//     )
 
-    if (response.status !== 200) {
-      throw new Error('HTTP request failed')
-    }
-    let page = await response.json()
-    return page?.details ?? ''
-  } catch (e) {
-    logError(`Error while retrieving details for ${handle}.`)
-  }
-  return ''
-}
+//     if (response.status !== 200) {
+//       throw new Error('HTTP request failed')
+//     }
+//     let page = await response.json()
+//     return page?.details ?? ''
+//   } catch (e) {
+//     logError(`Error while retrieving details for ${handle}.`)
+//   }
+//   return ''
+// }
 
 async function accountFofs(
   handle: string,
@@ -120,12 +146,16 @@ async function accountFofs(
   setFollows: (x: Array<AccountDetails>) => void,
   logError: (x: string) => void
 ): Promise<void> {
+  const hfMembers = await organizationMembers('huggingface', logError)
   const directFollows = await accountFollows(handle, 2000, logError)
   setProgress([0, directFollows.length])
   let progress = 0
 
-  const directFollowIds = new Set(directFollows.map(({ user }) => user))
-  directFollowIds.add(handle)
+  const directFollowIds = new Set([
+    handle,
+    ...directFollows.map(({ user }) => user),
+    ...hfMembers,
+  ])
 
   const indirectFollowLists: Array<Array<AccountDetails>> = []
 
