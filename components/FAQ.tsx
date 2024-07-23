@@ -61,6 +61,12 @@ export function FAQ({}) {
               plan to offer this functionality as it would facilitate inorganic
               and potentially malicious behaviour.
             </FAQItem>
+
+            <FAQItem title="Why don't I see Hugging Face staff members?">
+              Followgraph does not include Hugging Face staff members to
+              increase the diversity of the suggestions, and promote the
+              discovery of new accounts.
+            </FAQItem>
           </div>
         </div>
       </div>
